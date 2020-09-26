@@ -1,5 +1,4 @@
 const fs = require("fs");
-var PdfTable = require('voilab-pdf-table');
 const PDFDocument = require("pdfkit");
 
 const invoice = {
