@@ -2,28 +2,28 @@ const fs = require("fs");
 const PDFDocument = require("pdfkit");
 
 const invoice = {
-    number: "12ABC123",
+    number: "12AB123",
     date: new Date(),
     customerName: "Test Customer",
-    customerAddress:"AbC Street very big and nice street",
-    customergstin:"TestGSTIN123"
+    billingAddress: "AbC Street very big and nice street",
+    shippingAddress: "AbC Street very big and nice street",
+    customergstin: "GSTIN12345"
 }
 function createInvoice(path) {
     const doc = new PDFDocument({ margin: 50 });
     doc.pipe(fs.createWriteStream(path));
     generateHeader(doc);
-    doc
-        .moveDown(2)
-        .font('Helvetica-Bold')
-        .fontSize(10)
-        .text("Customer Name:", 50)
-        .font('Helvetica')
-        .fontSize(12)
-        .text(invoice.customerName)
-        .fontSize(10)
-        .text(invoice.customerAddress)
-        .text(`GSTIN : ${invoice.customergstin}`);
+    generateCustomerDetails(doc);
+   
     doc.end();
+}
+function generateSeparator(doc){
+    doc 
+    .moveDown()
+    .moveTo(45, doc.y)
+    .lineTo(555, doc.y)
+    .stroke();
+        
 }
 function generateHeader(doc) {
     doc
@@ -33,19 +33,36 @@ function generateHeader(doc) {
         .fontSize(10)
         .text("Address Line 1")
         .text("Address Line 2")
-        .text("GSTIN No: HARDCODEDGST")
+        .text("GSTIN No. : HARDCODEDGST")
         .fontSize(10)
         .text("Computer Generated Invoice", 200, 65, { align: "right" })
         .fontSize(15)
         .text(`Invoice:${invoice.number}`, 200, 80, { align: "right" })
         .fontSize(10)
-        .text(`Date : ${invoice.date.toDateString()}`, 200, 100, { align: "right" })
-        .moveTo(50, 120)
-        .lineTo(550, 120)
-        .stroke();
+        .text(`Date : ${invoice.date.toDateString()}`, 200, 100, { align: "right" });
+    generateSeparator(doc);
+        
+        
 }
-function generateBillingDetails(doc) {
-
+function generateCustomerDetails(doc) {
+    let columnWidth=175;
+    doc
+    .moveDown(2)
+    .font('Helvetica-Bold')
+    .text("Customer Name:", 50, 130, { align: "left" ,width:columnWidth-10})
+    .text("Billing Address:", 50+columnWidth, 130, { align: "left" ,width:columnWidth-10})
+    .text("Shipping Address:", 50+columnWidth*2 , 130, { align: "left" ,width:columnWidth-10})
+    .font('Helvetica')
+    .text(invoice.customerName, 50, 145, { align: "left" ,width:columnWidth-10})
+    .text(invoice.billingAddress, 50+columnWidth, 145, { align: "left" ,width:columnWidth-10})
+    .text(invoice.shippingAddress, 50+columnWidth*2 , 145, { align: "left" ,width:columnWidth-10})
+    
+    .moveDown()
+    .font('Helvetica-Bold')
+    .text(`GSTIN No. :`,50,170)
+    .font('Helvetica')
+    .text(invoice.customergstin,50,185);
+    generateSeparator(doc);
 
 }
 createInvoice('invoices/test.pdf');
