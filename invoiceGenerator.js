@@ -11,7 +11,7 @@ const invoice = {
     items: [
         {
             name: "Item 1",
-            price: 350,
+            price: 932,
             HSN: 8402,
             quantity: 2
         },
@@ -94,11 +94,13 @@ function generateItemList(doc) {
     let y = doc.y + 5;
     doc
         .font('Helvetica-Bold')
-        .text("S.No.", 50, y, { align: "left", width: 50 })
-        .text("Name", 100, y, { align: "left", width: 175 })
-        .text("HSN Code", 290, y, { align: "left", width: 60 })
-        .text("Quantity", 360, y, { align: "left", width: 80 })
-        .text("Rate", 450, y, { align: "left", width: 175 })
+        .text("S.No.", 50, y, { align: "left", width: 30 })
+        .text("Name", 90, y, { align: "left", width: 175 })
+        .text("HSN", 270, y, { align: "left", width: 50 })
+        .text("QTY", 310, y, { align: "left", width: 40 })
+        .text("Price", 350, y, { align: "left", width: 60 })
+        .text("CGST", 390, y, { align: "left", width: 60 })
+        .text("SGST", 450, y, { align: "left", width: 175 })
         .text("Amount", 0, y, { align: "right" })
         ;
     generateSeparator(doc);
@@ -106,16 +108,19 @@ function generateItemList(doc) {
     let total = 0;
 
     invoice.items.forEach(item => {
-        total += item.price * item.quantity;
-        y = (index == 1) ? doc.y + 10 : doc.y + 5;
+        let price =(item.price * item.quantity)*1.18;
+        total += price;
+        y = (index == 1) ? doc.y + 10 : doc.y + 50;
         doc
             .font('Helvetica')
-            .text(`${index}.`, 50, y, { align: "left", width: 50 })
-            .text(item.name, 100, y, { align: "left", width: 175 })
-            .text(item.HSN, 290, y, { align: "left", width: 60 })
-            .text(item.quantity, 360, y, { align: "left", width: 80 })
-            .text(item.price, 450, y, { align: "left", width: 175 })
-            .text((item.price * item.quantity), 0, y, { align: "right" })
+            .text(`${index}.`, 50, y, { align: "left", width: 30 })
+            .text(item.name, 90, y, { align: "left", width: 175 })
+            .text(item.HSN, 270, y, { align: "left", width: 50 })
+            .text(item.quantity, 310, y, { align: "left", width: 80 })
+            .text(item.price, 350, y, { align: "left", width: 60 })
+            .text(`@9%\n${(item.price * 0.9).toFixed(2)}*${item.quantity}`, 390, y, { align: "left", width: 60 })
+            .text(`@9%\n${(item.price * 0.9).toFixed(2)}*${item.quantity}`, 450, y, { align: "left", width: 175 })
+            .text(price, 0, y, { align: "right" })
             ;
         index += 1;
     });
